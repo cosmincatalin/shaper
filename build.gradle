@@ -1,5 +1,5 @@
 buildscript {
-   ext.kotlin_version = '1.2.20'
+   ext.kotlin_version = '1.2.21'
    ext.antlr_version = '4.7.1'
  
    repositories {
@@ -36,6 +36,6 @@ dependencies {
 generateGrammarSource {
     maxHeapSize = "64m"
     arguments += ['-package', 'com.cosminsanda.shaper']
-    outputDirectory = new File("src/generated/java/com/cosminsanda/shaper".toString())
+    outputDirectory = new File("build/generated-src/antlr/main/com/cosminsanda/shaper".toString())
 }
 compileJava.dependsOn generateGrammarSource
