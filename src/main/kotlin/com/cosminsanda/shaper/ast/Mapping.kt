@@ -1,11 +1,9 @@
 package com.cosminsanda.shaper.ast
 
-import com.cosminsanda.shaper.parsing.ShaperParser.ShapeContext
-import com.cosminsanda.shaper.parsing.ShaperParser.RowContext
-import com.cosminsanda.shaper.parsing.ShaperParser.ShaperContext
+import com.cosminsanda.shaper.ShaperParser
 
-fun ShaperContext.toAst(): Shaper = Shaper(this.row().map { it.toAst() })
+fun ShaperParser.ShaperContext.toAst(): Shaper = Shaper(this.dim().text.toInt(), this.row().map { it.toAst() })
 
-fun RowContext.toAst(): Row = Row(this.shape().map { it.toAst() })
+fun ShaperParser.RowContext.toAst(): Row = Row(this.shape().map { it.toAst() })
 
-fun ShapeContext.toAst(): Shape = this.toAst()
+fun ShaperParser.ShapeContext.toAst(): Shape = Shape(text)

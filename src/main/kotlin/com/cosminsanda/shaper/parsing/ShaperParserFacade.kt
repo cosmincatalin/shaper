@@ -1,6 +1,9 @@
 package com.cosminsanda.shaper.parsing
 
+import com.cosminsanda.shaper.ShaperLexer
+import com.cosminsanda.shaper.ShaperParser
 import com.cosminsanda.shaper.ast.Shape
+import com.cosminsanda.shaper.ast.toAst
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CharStream
 import org.antlr.v4.runtime.CommonTokenStream
