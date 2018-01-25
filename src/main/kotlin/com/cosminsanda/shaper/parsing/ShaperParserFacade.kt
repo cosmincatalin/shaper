@@ -2,24 +2,23 @@ package com.cosminsanda.shaper.parsing
 
 import com.cosminsanda.shaper.ShaperLexer
 import com.cosminsanda.shaper.ShaperParser
-import com.cosminsanda.shaper.ast.Shape
+import com.cosminsanda.shaper.ast.Shaper
 import com.cosminsanda.shaper.ast.toAst
-import org.antlr.v4.runtime.ANTLRInputStream
-import org.antlr.v4.runtime.CharStream
+import org.antlr.v4.runtime.CharStreams
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.TokenStream
 import java.io.InputStream
 
-data class AntlrParsingResult(val root : ShaperParser.ShapeContext?) {}
+data class AntlrParsingResult(val root : ShaperParser.ShaperContext)
 
-data class ParsingResult(val root : Shape?) {}
+data class ParsingResult(val root : Shaper)
 
 object ShaperAntlrParserFacade {
 
     fun parse(inputStream: InputStream) : AntlrParsingResult {
-        val lexer = ShaperLexer(ANTLRInputStream(inputStream) as CharStream)
+        val lexer = ShaperLexer(CharStreams.fromStream(inputStream))
         val parser = ShaperParser(CommonTokenStream(lexer) as TokenStream)
-        val antlrRoot = parser.shape()
+        val antlrRoot = parser.shaper()
         return AntlrParsingResult(antlrRoot)
     }
 
@@ -30,7 +29,7 @@ object ShaperParserFacade {
     fun parse(inputStream: InputStream) : ParsingResult {
         val antlrParsingResult = ShaperAntlrParserFacade.parse(inputStream)
         val antlrRoot = antlrParsingResult.root
-        val astRoot = antlrRoot?.toAst()
+        val astRoot = antlrRoot.toAst()
         return ParsingResult(astRoot)
     }
 

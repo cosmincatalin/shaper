@@ -1,13 +1,15 @@
 package com.cosminsanda.shaper.compiler
 
 import com.cosminsanda.shaper.ast.Shape
+import com.cosminsanda.shaper.ast.Shaper
 import com.cosminsanda.shaper.parsing.ShaperParserFacade
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
 
 class ImageCompiler {
-    fun compile(root: Shape): ByteArray {
+    fun compile(root: Shaper): ByteArray {
+        print(root)
         throw UnsupportedOperationException(this.javaClass.canonicalName)
     }
 }
@@ -17,7 +19,7 @@ fun main(args: Array<String>) {
 
     val parsingResult = ShaperParserFacade.parse(code)
 
-    val root = parsingResult.root!!
+    val root = parsingResult.root
 
     val bytes = ImageCompiler().compile(root)
     val img = FileOutputStream("img.png")
