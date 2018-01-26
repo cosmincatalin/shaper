@@ -20,19 +20,23 @@ The `Shaper` language is very basic and does not have safeguards. It should be u
 
 ### How to use it
 
-### Maven
-
-TBA
-
-### CLI
-
-TBA
-
-### Compiler
+#### Source code
 
 Clone the repo and run `./gradelw shadowJar`. You'll find the uber-jar in `./build/libs/shaper-all.jar`.
 Generate a file like this: `java -cp shaper-all.jar com.cosminsanda.shaper.compiler.Shaper2Image --source-code "180>>>circle,square|triangle<<<" --out-filename test.png
 `
+
+#### Single file
+
+`java -cp shaper-all.jar com.cosminsanda.shaper.compiler.Shaper2Image --source-file /Users/cosmin/test.shape`
+
+This will create an image `/Users/cosmin/test.shape.png`
+
+#### Directory
+
+`java -cp shaper-all.jar com.cosminsanda.shaper.compiler.Shaper2Image --source-dir /Users/cosmin/shapes`
+
+This will create images with a file name pattern similar to the one for single file above.
 
 ### Example code
 

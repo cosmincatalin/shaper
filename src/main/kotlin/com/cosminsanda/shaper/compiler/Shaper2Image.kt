@@ -2,13 +2,11 @@ package com.cosminsanda.shaper.compiler
 
 import com.audienceproject.util.cli.Arguments
 import com.cosminsanda.shaper.parsing.ShaperParserFacade
-import scala.None
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.*
+import java.util.concurrent.Executors
 import javax.imageio.ImageIO
-import java.io.ByteArrayInputStream
-import java.nio.charset.StandardCharsets
 
 
 class Shaper2Image {
@@ -61,16 +59,40 @@ class Shaper2Image {
         fun main(args: Array<String>) {
 
             val arguments = Arguments(args)
+            val executor = Executors.newCachedThreadPool()
 
-            if (arguments.isSet("source-code")) {
+            if (arguments.isSet("source-code") && arguments.isSet("out-filename")) {
                 val code = ByteArrayInputStream(arguments.arguments()["source-code"].get().get().toByteArray())
-                val res = Shaper2Image().compile(code)
-                val img = ImageIO.read(ByteArrayInputStream(res))
-                val outputfile = File(arguments.arguments()["out-filename"].get().get())
-                ImageIO.write(img, "png", outputfile)
+                val task = Para(code, arguments.arguments()["out-filename"].get().get())
+                executor.submit(task)
+            } else if (arguments.isSet("source-file")) {
+                val code = FileInputStream(File(arguments.arguments()["source-file"].get().get()))
+                val task = Para(code, arguments.arguments()["source-file"].get().get() + ".png")
+                executor.submit(task)
+            } else if (arguments.isSet("source-dir")) {
+                File(arguments.arguments()["source-dir"].get().get()).walk().iterator().forEach {
+                    if (it.extension == "shape") {
+                        val code = FileInputStream(File(it.absolutePath))
+                        val task = Para(code, it.absolutePath + ".png")
+                        executor.submit(task)
+                    }
+                }
+            } else {
+                println("No valid arguments provided. Please read the README.md file at https://github.com/cosmincatalin/shaper")
             }
 
+            executor.shutdown()
         }
 
     }
+}
+
+class Para(val code: InputStream, val dest: String) : Runnable {
+    override fun run() {
+        val res = Shaper2Image().compile(code)
+        val img = ImageIO.read(ByteArrayInputStream(res))
+        val outputfile = File(dest)
+        ImageIO.write(img, "png", outputfile)
+    }
+
 }
