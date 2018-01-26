@@ -1,12 +1,41 @@
-## Shaper - a crude DSL library for producing test images
+## Shaper - a crude DSL for basic image creation
+
+`Shaper` is a DSL that can be used to produce images containing simple shapes.
+
+The provided compiler produces square shaped images. An image contains several rows of different shapes (triangles, circles, squares).
+The resulting image looks like a table of shapes.
+
+![Sample output image](test001.png)
+
+### The Language
+
+The `Shaper` language is very basic and does not have safeguards. It should be used as it is intended.
+
+* The source code must be a _one-linear_ that begins with a positive integer denoting the resolution of the output image (Eg: `512`)
+* The image description starts after the begin sequence `>>>`
+* Individual rows are separated by pipe `|`. There is no pipe after `>>>` or in front of `<<<`.
+* Individual shapes are separated by coma `,`. A row must not begin with a coma or end with a coma.
+* The row is then made up of a list of shapes(`square`, `circle`, `triangle`). 
+* The code finishes with the end sequence `<<<`
 
 ### How to use it
 
-Sample `.shape` file content
+### As library from Maven
 
-```256>>>circle,square,square,triangle,triangle|triangle,circle|square,circle,triangle,square<<<```
+TBA
 
-Sample `Kotlin` code that useses an external `.shape` file to produce a `.png` file
+### CLI
+
+TBA
+
+
+### Example code
+
+`test002.shape` file content:
+
+```180>>>circle,square,square,triangle,triangle|triangle,circle|square,circle,triangle,square|circle,circle,circle|triangle<<<```
+
+Sample `Kotlin` code that useses the external `test002.shape` file to produce a `.png` file:
 
 ```kotlin
 val code = FileInputStream(File("test001.shape"))
@@ -15,9 +44,6 @@ val img = ImageIO.read(ByteArrayInputStream(res))
 val outputfile = File("myshape.png")
 ImageIO.write(img, "png", outputfile)
 ```
+Sample output:
 
-#### Sample output
-
-![sample][sample]
-
-[sample]: data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAQAAAAEACAIAAADTED8xAAAEvUlEQVR42u3dS3LbMBBAQdz/0swqS1dJ4nwATPcBKMucF1okhKwn30pW8xJcab0fXwH89a4L/mUxwYkBRI3IwAAKrhsuTYkBxA7K2ABSB9SfZ1kBhM/KtAAKPjz4fJIVQMa4TA4gaUB9Rk8JIGliRgVQcAfJTaqUAPKGZngA4QPqRq0ANg2g4DGCJxUpAaTOjQACB9TTOgFsGkDBs2SPq1MCuGA69w8gZEAt2RDApgEULCiyZkkAZwfwckCt2xPApgGkLqorewkBCCA9gJ8HtOAlhgZwx3Q2BpC6qqLsJVwBBFAUwHqxtlQDAtgrgOyFFTUvIQABlAawXi8u0oAA+gPoXVshAAEcHEDU02UNBATwWAv0/STt83BNAAI4MoDYxwsaeBXA4/sA34zRnndXBSCAwwLIuL+kgR8DeHwnuOPtFDyfN+WfBvDYFaKj54IFKgb90wAe+wKV/zlX8Osy6F8E8NgZrvzzTMGvy6x/EcAPZ6LghkZ7AOcGJoBfAvjwlBQ80Lk+gMqX4LsAQAAggP/X6PgfwrWbIwIIH0d/wnJeAKtkjycZsFcAgVPobgZnB7BKtrjRALsEEDWC7mpzSQCrZHsPDdAfQNT8CYCrAlgl23togM4AouZPAFwYwCrZ3kMD9AQQNX8C4NoA2ldEO4ukBBA4ggLg5gBWyR5PAqAugMAprNyyAXoCaGzAWSQ4gPBBFAD3B7BKNvoTALkBZMyiABgRQMveWM4iYQHkjaPpZ0QAxRcBp5CwALKH0vQzIoCyi4DzR1gANaNp+hkRQHYDzhyRARR/PDX93B9AUgPOGcEBND6iMvrcHEDUFyadJ9I/BMPEAHxbZZPflFmcG0D9cOywrZ0ABNDzIXiTfR0FMDqAxkH57VACEMAui4Ki3rAAaAigd1x+Po4ABBBwXnsn5s1BBCCAt+e1fWjeHEQAAjg7gJcHEYAAXp3X9rnJflghAAHsG0DB0zoBCODP83rBw2YBCODUAOpXbgtAAIcFsFp3eBeAAPqXGwlAAKMDWP6XAwFknNfG0Wk8lAAE0H8FCDyaAARwWAA7HE0AAjgsgNWxw7sABLD2mVcBCGB0ACvtawwCGBrAU7sWKOOwAhDAoABW5ld5BDAxgKfq+wBJBxeAAGYFkP3DC2BcAM9p/wmNAASw6afJsvcjAAEccI8y780IQAAHPKYtuNEkAAHEn9euQwmALQL48IdofycCuDYAvwIEAAIAAYAAQAAgABAACAAEAAIAAYAAQAAgABAACAAEAAIAAYAAQAAgABAACAAEAAIAAYAAQAAgABAACAAEAAIAAYAAQAAgABAACAAEAAIAAYAAQAAgABAACAAEAAIAASAAEAAIAAQAAgABgABAACAAEAAIAAQAAgABgABAACAAEAAIAAQAAgABgABAACAAEAAIAAQAAgABgABAACAAEAAIAAQAAgABgABAACAAEAAIAAQAAgABgABAACAAEAAIAASAAEAAIAAQAAgABAACAAGAAEAAIAAQAAgABAACAAGAAEAAIAAQAAgABAACAAGAAEAAIAAQAAgABAACAAGAAEAAIAAQAAgABAACAAGAAEAAIAAQAAgABAACAAGAAEAAIAAEAAIAAcA4/wBQ72Ax5seYCgAAAABJRU5ErkJggg==
+![Sample output image](test002.png)
