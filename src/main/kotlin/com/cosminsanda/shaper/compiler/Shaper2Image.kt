@@ -1,11 +1,14 @@
 package com.cosminsanda.shaper.compiler
 
+import com.audienceproject.util.cli.Arguments
 import com.cosminsanda.shaper.parsing.ShaperParserFacade
+import scala.None
 import java.awt.Color
 import java.awt.image.BufferedImage
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
+import java.io.*
 import javax.imageio.ImageIO
+import java.io.ByteArrayInputStream
+import java.nio.charset.StandardCharsets
 
 
 class Shaper2Image {
@@ -49,6 +52,25 @@ class Shaper2Image {
         val imageInByte = baos.toByteArray()
         baos.close()
         return imageInByte
+
+    }
+
+    companion object {
+
+        @JvmStatic
+        fun main(args: Array<String>) {
+
+            val arguments = Arguments(args)
+
+            if (arguments.isSet("source-code")) {
+                val code = ByteArrayInputStream(arguments.arguments()["source-code"].get().get().toByteArray())
+                val res = Shaper2Image().compile(code)
+                val img = ImageIO.read(ByteArrayInputStream(res))
+                val outputfile = File(arguments.arguments()["out-filename"].get().get())
+                ImageIO.write(img, "png", outputfile)
+            }
+
+        }
 
     }
 }
