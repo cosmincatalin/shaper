@@ -62,7 +62,8 @@ class Shaper2Image {
         fun main(args: Array<String>) {
 
             val arguments = Arguments(args)
-            val executor = Executors.newCachedThreadPool()
+            val threads = if(arguments.isSet("threads")) arguments.arguments()["threads"].get().get().toInt() else 4
+            val executor = Executors.newFixedThreadPool(threads)
 
             if (arguments.isSet("source-code") && arguments.isSet("out-filename")) {
                 val code = ByteArrayInputStream(arguments.arguments()["source-code"].get().get().toByteArray())
@@ -78,7 +79,6 @@ class Shaper2Image {
 
                 files.forEach {
                     if (it.extension == "shape") {
-                        println("Processing ${it.absolutePath}")
                         val code = FileInputStream(File(it.absolutePath))
                         val task = Para(code, it.absolutePath + ".png")
                         executor.submit(task)
@@ -96,6 +96,7 @@ class Shaper2Image {
 
 class Para(val code: InputStream, val dest: String) : Runnable {
     override fun run() {
+        println("Processing $dest")
         val res = Shaper2Image().compile(code)
         val img = ImageIO.read(ByteArrayInputStream(res))
         val outputfile = File(dest)
