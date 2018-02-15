@@ -22,7 +22,7 @@ The `Shaper` language is very basic and does not have safeguards. It should be u
 
 #### Source code
 
-Clone the repo and run `./gradelw shadowJar`. You'll find the uber-jar in `./build/libs/shaper-all.jar`.
+Clone the repo and run `./gradlew shadowJar`. You'll find the uber-jar in `./build/libs/shaper-all.jar`.
 Generate a file like this: `java -cp shaper-all.jar com.cosminsanda.shaper.compiler.Shaper2Image --source-code "180>>>circle,square|triangle<<<" --out-filename test.png
 `
 
