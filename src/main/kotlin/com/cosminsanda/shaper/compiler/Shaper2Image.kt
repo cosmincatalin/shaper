@@ -1,7 +1,10 @@
+@file:Suppress("UNCHECKED_CAST")
+
 package com.cosminsanda.shaper.compiler
 
 import com.audienceproject.util.cli.Arguments
 import com.cosminsanda.shaper.parsing.ShaperParserFacade
+import org.apache.commons.io.FileUtils
 import java.awt.Color
 import java.awt.image.BufferedImage
 import java.io.*
@@ -70,7 +73,10 @@ class Shaper2Image {
                 val task = Para(code, arguments.arguments()["source-file"].get().get() + ".png")
                 executor.submit(task)
             } else if (arguments.isSet("source-dir")) {
-                File(arguments.arguments()["source-dir"].get().get()).walk().iterator().forEach {
+
+                val files = FileUtils.listFiles(File(arguments.arguments()["source-dir"].get().get()), Array(1, { _ -> "shape"}), true) as Collection<File>
+
+                files.forEach {
                     if (it.extension == "shape") {
                         val code = FileInputStream(File(it.absolutePath))
                         val task = Para(code, it.absolutePath + ".png")
