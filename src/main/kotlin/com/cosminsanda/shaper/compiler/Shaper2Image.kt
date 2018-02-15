@@ -78,6 +78,7 @@ class Shaper2Image {
 
                 files.forEach {
                     if (it.extension == "shape") {
+                        println("Processing ${it.absolutePath}")
                         val code = FileInputStream(File(it.absolutePath))
                         val task = Para(code, it.absolutePath + ".png")
                         executor.submit(task)
