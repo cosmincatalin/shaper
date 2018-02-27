@@ -11,7 +11,8 @@ The resulting image looks like a table of shapes.
 
 The `Shaper` language is very basic and does not have safeguards. It should be used as it is intended.
 
-* The source code must be a _one-linear_ that begins with a positive integer denoting the resolution of the output image (Eg: `512`)
+* The source code must be a _one-linear_ that begins with a positive integer denoting the resolution of the output image (Eg: `img_dim:512`)
+* The size of the shapes follows (Eg: `shp_dim:32`)
 * The image description starts after the begin sequence `>>>`
 * Individual rows are separated by pipe `|`. There is no pipe after `>>>` or in front of `<<<`.
 * Individual shapes are separated by coma `,`. A row must not begin with a coma or end with a coma.
@@ -23,7 +24,7 @@ The `Shaper` language is very basic and does not have safeguards. It should be u
 #### Source code
 
 Clone the repo and run `./gradlew generateGrammarSource` and then `./gradlew shadowJar`. You'll find the uber-jar in `./build/libs/shaper-all.jar`.
-Generate a file like this: `java -cp shaper-all.jar com.cosminsanda.shaper.compiler.Shaper2Image --source-code "180>>>circle,square|triangle<<<" --out-filename test.png
+Generate a file like this: `java -cp shaper-all.jar com.cosminsanda.shaper.compiler.Shaper2Image --source-code "img_dim:180,shp_dim:32>>>circle,square|triangle<<<" --out-filename test.png
 `
 
 #### Single file
@@ -42,7 +43,7 @@ This will create images with a file name pattern similar to the one for single f
 
 `test002.shape` file content:
 
-```180>>>circle,square,square,triangle,triangle|triangle,circle|square,circle,triangle,square|circle,circle,circle|triangle<<<```
+```img_dim:180,shp_dim:32>>>circle,square,square,triangle,triangle|triangle,circle|square,circle,triangle,square|circle,circle,circle|triangle<<<```
 
 Sample `Kotlin` code that useses the external `test002.shape` file to produce a `.png` file:
 

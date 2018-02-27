@@ -16,12 +16,13 @@ class Shaper2Image {
 
     fun compile(input: InputStream): ByteArray {
         val root = ShaperParserFacade.parse(input).root
-        val dim = root.dim
+        val img_dim = root.img_dim
+        val shp_dim = root.shp_dim
 
-        val bufferedImage = BufferedImage(dim, dim, BufferedImage.TYPE_INT_RGB)
+        val bufferedImage = BufferedImage(img_dim, img_dim, BufferedImage.TYPE_INT_RGB)
         val g2d = bufferedImage.createGraphics()
         g2d.color = Color.white
-        g2d.fillRect(0, 0, dim, dim)
+        g2d.fillRect(0, 0, img_dim, img_dim)
 
         g2d.color = Color.black
         var j = 0
@@ -30,14 +31,14 @@ class Shaper2Image {
             it.shapes.forEach {
                 when(it.type) {
                     "square" -> {
-                        g2d.fillRect(i * 33, j * 33, 32, 32)
+                        g2d.fillRect(i * (shp_dim + 1), j * (shp_dim + 1), shp_dim, shp_dim)
                     }
                     "circle" -> {
-                        g2d.fillOval(i * 33, j * 33, 32, 32)
+                        g2d.fillOval(i * (shp_dim + 1), j * (shp_dim + 1), shp_dim, shp_dim)
                     }
                     "triangle" -> {
-                        val x = intArrayOf(i * 33, i * 33 + 16, i * 33 + 32)
-                        val y = intArrayOf(j * 33 + 32, j * 33, j * 33 + 32)
+                        val x = intArrayOf(i * (shp_dim + 1), i * (shp_dim + 1) + shp_dim / 2, i * (shp_dim + 1) + shp_dim)
+                        val y = intArrayOf(j * (shp_dim + 1) + shp_dim, j * (shp_dim + 1), j * (shp_dim + 1) + shp_dim)
                         g2d.fillPolygon(x, y, 3)
                     }
                 }
@@ -67,20 +68,23 @@ class Shaper2Image {
 
             if (arguments.isSet("source-code") && arguments.isSet("out-filename")) {
                 val code = ByteArrayInputStream(arguments.arguments()["source-code"].get().get().toByteArray())
-                val task = Para(code, arguments.arguments()["out-filename"].get().get())
-                executor.submit(task)
+                val res = Shaper2Image().compile(code)
+                val img = ImageIO.read(ByteArrayInputStream(res))
+                val outputfile = File(arguments.arguments()["out-filename"].get().get())
+                ImageIO.write(img, "png", outputfile)
             } else if (arguments.isSet("source-file")) {
                 val code = FileInputStream(File(arguments.arguments()["source-file"].get().get()))
-                val task = Para(code, arguments.arguments()["source-file"].get().get() + ".png")
-                executor.submit(task)
+                val res = Shaper2Image().compile(code)
+                val img = ImageIO.read(ByteArrayInputStream(res))
+                val outputfile = File(arguments.arguments()["source-file"].get().get() + ".png")
+                ImageIO.write(img, "png", outputfile)
             } else if (arguments.isSet("source-dir")) {
 
                 val files = FileUtils.listFiles(File(arguments.arguments()["source-dir"].get().get()), Array(1, { _ -> "shape"}), true) as Collection<File>
 
                 files.forEach {
                     if (it.extension == "shape") {
-                        val code = FileInputStream(File(it.absolutePath))
-                        val task = Para(code, it.absolutePath + ".png")
+                        val task = Para(it.absolutePath)
                         executor.submit(task)
                     }
                 }
@@ -94,12 +98,13 @@ class Shaper2Image {
     }
 }
 
-class Para(val code: InputStream, val dest: String) : Runnable {
+class Para(val path: String) : Runnable {
     override fun run() {
-        println("Processing $dest")
+        val code = FileInputStream(File(path))
         val res = Shaper2Image().compile(code)
+        code.close()
         val img = ImageIO.read(ByteArrayInputStream(res))
-        val outputfile = File(dest)
+        val outputfile = File("$path.png")
         ImageIO.write(img, "png", outputfile)
     }
 
