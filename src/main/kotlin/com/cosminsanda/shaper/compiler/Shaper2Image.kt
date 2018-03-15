@@ -15,7 +15,7 @@ import javax.imageio.ImageIO
 class Shaper2Image {
 
     fun compile(input: InputStream): ByteArray {
-        val root = ShaperParserFacade.parse(input).root
+        val root = ShaperParserFacade.parse(input)
         val img_dim = root.img_dim
         val shp_dim = root.shp_dim
 
